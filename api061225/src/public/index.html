@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portafolio Nivel Dios - Desarrollado para ganar">
+    <title>EL COMPAY | Portafolio Definitivo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* -----------------------------------------------------------
+           1. CORE & VARIABLES (El cerebro del diseño)
+        ----------------------------------------------------------- */
+        :root {
+            /* Paleta de Colores Cyberpunk */
+            --primary: #00f3ff;
+            --primary-dim: rgba(0, 243, 255, 0.1);
+            --secondary: #ff0055;
+            --secondary-dim: rgba(255, 0, 85, 0.1);
+            --accent: #bc13fe;
+            --bg-dark: #050505;
+            --bg-card: #0a0a0f;
+            --text-main: #ffffff;
+            --text-muted: #8892b0;
+            
+            /* Glassmorphism */
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --blur: 10px;
+
+            /* Espaciado y Layout */
+            --section-padding: 100px 0;
+            --container-width: 1200px;
+            
+            /* Animaciones */
+            --transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
+
+        h1, h2, h3, h4, h5, h6 { font-family: 'Orbitron', sans-serif; color: var(--text-main); }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+
+        /* Utilidades */
+        .container {
+            width: 90%;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .highlight { color: var(--primary); }
+        .highlight-sec { color: var(--secondary); }
+
+        /* -----------------------------------------------------------
+           2. PRELOADER (Suspenso inicial)
+        ----------------------------------------------------------- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: #222;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loader-progress {
+            position: absolute;
+            left: 0; top: 0; height: 100%; width: 0%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            animation: load 2s ease-in-out forwards;
+        }
+
+        .loader-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* -----------------------------------------------------------
+           3. CURSOR PERSONALIZADO (Interacción magnética)
+        ----------------------------------------------------------- */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background: var(--primary);
+        }
+        
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid var(--primary);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        
+        body.hovering .cursor-outline {
+            width: 60px; height: 60px;
+            background: rgba(0, 243, 255, 0.1);
+            border-color: transparent;
+            mix-blend-mode: difference;
+        }
+
+        /* -----------------------------------------------------------
+           4. FONDO ANIMADO (Canvas Container)
+        ----------------------------------------------------------- */
+        #canvas-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* -----------------------------------------------------------
+           5. NAVEGACIÓN (Glassmorphism)
+        ----------------------------------------------------------- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        
+        header.scrolled {
+            padding: 10px 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            letter-spacing: 2px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--secondary);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::before { width: 100%; }
+        .nav-link.active { color: var(--primary); }
+
+        /* Menu Hamburguesa (Mobile) */
+        .hamburger { display: none; font-size: 1.5rem; }
+
+        /* -----------------------------------------------------------
+           6. HERO SECTION (La entrada)
+        ----------------------------------------------------------- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 60px;
+            position: relative;
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+        }
+        
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            position: relative;
+        }
+        
+        /* Efecto Glitch Manual (CSS Complejo) */
+        .hero-title::before, .hero-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+        }
+        
+        .hero-title::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--secondary);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        
+        .hero-title::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--primary);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        .typewriter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--primary);
+            min-height: 1.6em;
+        }
+
+        .hero-btn {
+            margin-top: 3rem;
+            padding: 1rem 3rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Orbitron';
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: var(--primary);
+            transition: 0.3s;
+            z-index: -1;
+        }
+        
+        .hero-btn:hover::before { left: 0; }
+        .hero-btn:hover { color: #000; box-shadow: 0 0 40px var(--primary-dim); }
+
+        /* -----------------------------------------------------------
+           7. ABOUT & SKILLS (Estadísticas)
+        ----------------------------------------------------------- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .about-text p { margin-bottom: 1.5rem; color: var(--text-muted); font-size: 1.1rem;}
+        
+        .skills-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .skill-box { position: relative; }
+        .skill-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .skill-name { font-family: 'Orbitron'; font-size: 0.9rem; }
+        
+        .skill-bar {
+            width: 100%; height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%; /* JS lo animará */
+            border-radius: 4px;
+            transition: width 1.5s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+        }
+
+        /* -----------------------------------------------------------
+           8. SERVICIOS (Tarjetas 3D)
+        ----------------------------------------------------------- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: var(--bg-card);
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--secondary);
+        }
+        
+        .service-card h3 { margin-bottom: 1rem; }
+        .service-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* -----------------------------------------------------------
+           9. PORTAFOLIO (Galería Filtrable)
+        ----------------------------------------------------------- */
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Orbitron';
+            font-size: 1rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--glass);
+            color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-dim);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .portfolio-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 300px;
+            cursor: pointer;
+        }
+        
+        .portfolio-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            bottom: -100%; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            transition: 0.4s ease-in-out;
+        }
+        
+        .portfolio-item:hover .portfolio-img { transform: scale(1.1); }
+        .portfolio-item:hover .portfolio-overlay { bottom: 0; }
+        
+        .portfolio-cat {
+            color: var(--primary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* -----------------------------------------------------------
+           10. CONTACTO (Formulario & Footer)
+        ----------------------------------------------------------- */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-form {
+            background: var(--glass);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .input-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333;
+            padding: 10px 0;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Poppins';
+            transition: var(--transition);
+        }
+
+        .input-field:focus { outline: none; border-color: var(--primary); }
+        
+        .input-label {
+            position: absolute;
+            top: 10px; left: 0;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        
+        .input-field:focus ~ .input-label,
+        .input-field:valid ~ .input-label {
+            top: -20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 0;
+            margin-top: 5rem;
+            background: #020202;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .social-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: 0.3s;
+        }
+        
+        .social-icon:hover { color: var(--primary); transform: translateY(-5px); }
+
+        /* Media Queries para hacerlo responsivo */
+        @media (max-width: 900px) {
+            .hero-title { font-size: 3rem; }
+            .about-grid, .contact-container { grid-template-columns: 1fr; }
+            .hamburger { display: block; z-index: 1001; }
+            .nav-links {
+                position: fixed; top: 0; right: -100%;
+                width: 70%; height: 100vh;
+                background: var(--bg-card);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: 0.5s;
+                border-left: 1px solid var(--primary);
+            }
+            .nav-links.active { right: 0; }
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 80px, 0); }
+            20% { clip: rect(40px, 9999px, 10px, 0); }
+            40% { clip: rect(90px, 9999px, 30px, 0); }
+            60% { clip: rect(20px, 9999px, 60px, 0); }
+            80% { clip: rect(50px, 9999px, 20px, 0); }
+            100% { clip: rect(30px, 9999px, 90px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(50px, 9999px, 20px, 0); }
+            20% { clip: rect(20px, 9999px, 60px, 0); }
+            40% { clip: rect(80px, 9999px, 10px, 0); }
+            60% { clip: rect(10px, 9999px, 40px, 0); }
+            80% { clip: rect(60px, 9999px, 80px, 0); }
+            100% { clip: rect(40px, 9999px, 50px, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <h2 class="loader-text">INICIALIZANDO SISTEMA...</h2>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="canvas-container">
+        <canvas id="neuro-canvas"></canvas>
+    </div>
+
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">COMPAY<span class="highlight">.DEV</span></a>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+                    <li><a href="#about" class="nav-link">Perfil</a></li>
+                    <li><a href="#services" class="nav-link">Poderes</a></li>
+                    <li><a href="#portfolio" class="nav-link">Proyectos</a></li>
+                    <li><a href="#contact" class="nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="container hero-content">
+                <p class="highlight" style="letter-spacing: 5px; margin-bottom: 10px;">HOLA MUNDO, SOY</p>
+                <div class="glitch-wrapper">
+                    <h1 class="hero-title" data-text="EL COMPAY">EL COMPAY</h1>
+                </div>
+                <div class="typewriter"></div>
+                <a href="#portfolio" class="hero-btn hover-trigger">Ver mi trabajo</a>
+            </div>
+        </section>
+
+        <section id="about" style="padding: var(--section-padding);">
+            <div class="container">
+                <h2 class="section-title" data-text="SOBRE MI">SOBRE MÍ</h2>
+                <div class="about-grid">
+                    <div class="about-text">
+                        <h3 style="font-size: 2rem; margin-bottom: 1rem;">Más que código, creo <span class="highlight-sec">realidades</span>.</h3>
+                        <p>No soy un desarrollador cualquiera, compay. Soy un arquitecto digital obsesionado con la perfección. Me muevo entre el diseño brutalista y la ingeniería de software robusta.</p>
+                        <p>¿Mi misión? Destruir el aburrimiento en la web. Cada píxel cuenta, cada línea de código tiene un propósito. Si buscas algo "normal", te equivocaste de sitio.</p>
+                        
+                        <div style="display: flex; gap: 2rem; margin-top: 2rem;">
+                            <div>
+                                <h4 class="highlight" style="font-size: 2.5rem;">5+</h4>
+                                <span style="font-size: 0.9rem; color: var(--text-muted);">Años de Exp.</span>
+                            </div>
+                            <div>
+                                <h4 class="highlight" style="font-size: 2.5rem;">80+</h4>
+                                <span style="font-size: 0.9rem; color: var(--text-muted);">Proyectos</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="skills-container">
+                        <div class="skill-box">
+                            <div class="skill-info">
+                                <span class="skill-name">Frontend (React/Vue/Three.js)</span>
+                                <span class="skill-num">98%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="98%"></div></div>
+                        </div>
+                        <div class="skill-box">
+                            <div class="skill-info">
+                                <span class="skill-name">Backend (Node/Python/Go)</span>
+                                <span class="skill-num">90%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
+                        </div>
+                        <div class="skill-box">
+                            <div class="skill-info">
+                                <span class="skill-name">UI/UX Design</span>
+                                <span class="skill-num">95%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="95%"></div></div>
+                        </div>
+                        <div class="skill-box">
+                            <div class="skill-info">
+                                <span class="skill-name">DevOps & Cloud</span>
+                                <span class="skill-num">85%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="85%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" style="padding: var(--section-padding);">
+            <div class="container">
+                <h2 class="section-title">MIS PODERES</h2>
+                <div class="cards-grid">
+                    <article class="service-card hover-trigger">
+                        <i class="fas fa-code service-icon"></i>
+                        <h3>Desarrollo Web</h3>
+                        <p>Sitios web ultrarrápidos, SPAs reactivas y PWAs que funcionan como magia negra. Código limpio, escalable y mantenible.</p>
+                    </article>
+                    <article class="service-card hover-trigger">
+                        <i class="fas fa-layer-group service-icon"></i>
+                        <h3>UI/UX Design</h3>
+                        <p>Interfaces que enamoran. Wireframing, prototipado y diseño visual centrado en la experiencia de usuario inmersiva.</p>
+                    </article>
+                    <article class="service-card hover-trigger">
+                        <i class="fas fa-rocket service-icon"></i>
+                        <h3>SEO & Performance</h3>
+                        <p>Tu sitio en el #1. Optimización técnica, Core Web Vitals y estrategias para dominar los motores de búsqueda.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" style="padding: var(--section-padding);">
+            <div class="container">
+                <h2 class="section-title">GALERÍA</h2>
+                
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="web">Web</button>
+                    <button class="filter-btn" data-filter="app">Apps</button>
+                    <button class="filter-btn" data-filter="design">Diseño</button>
+                </div>
+
+                <div class="portfolio-grid">
+                    <div class="portfolio-item hover-trigger" data-cat="web">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80" alt="Proyecto 1" class="portfolio-img">
+                        <div class="portfolio-overlay">
+                            <span class="portfolio-cat">Desarrollo Web</span>
+                            <h3>Proyecto Neon City</h3>
+                        </div>
+                    </div>
+                    <div class="portfolio-item hover-trigger" data-cat="design">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Proyecto 2" class="portfolio-img">
+                        <div class="portfolio-overlay">
+                            <span class="portfolio-cat">Diseño UI</span>
+                            <h3>Dashboard Futuro</h3>
+                        </div>
+                    </div>
+                    <div class="portfolio-item hover-trigger" data-cat="app">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1267&q=80" alt="Proyecto 3" class="portfolio-img">
+                        <div class="portfolio-overlay">
+                            <span class="portfolio-cat">App Móvil</span>
+                            <h3>Crypto Wallet</h3>
+                        </div>
+                    </div>
+                    <div class="portfolio-item hover-trigger" data-cat="web">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Proyecto 4" class="portfolio-img">
+                        <div class="portfolio-overlay">
+                            <span class="portfolio-cat">Web Fullstack</span>
+                            <h3>E-Commerce AI</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" style="padding: var(--section-padding);">
+            <div class="container">
+                <h2 class="section-title">CONECTEMOS</h2>
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <h3 style="font-size: 2.5rem; margin-bottom: 2rem;">¿Tienes un proyecto <span class="highlight">loco</span> en mente?</h3>
+                        <p style="margin-bottom: 2rem; color: var(--text-muted);">Estoy disponible para freelance y colaboraciones. Si quieres llevar tu marca al siguiente nivel, manda ese mensaje y hagamos historia.</p>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <i class="fas fa-envelope highlight" style="margin-right: 10px;"></i>
+                            <span>hola@compay.dev</span>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <i class="fas fa-map-marker-alt highlight" style="margin-right: 10px;"></i>
+                            <span>Barquisimeto, Venezuela</span>
+                        </div>
+                    </div>
+
+                    <form class="contact-form">
+                        <div class="input-group">
+                            <input type="text" class="input-field" required>
+                            <label class="input-label">Tu Nombre</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" class="input-field" required>
+                            <label class="input-label">Tu Correo</label>
+                        </div>
+                        <div class="input-group">
+                            <textarea class="input-field" rows="4" required></textarea>
+                            <label class="input-label">Mensaje</label>
+                        </div>
+                        <button type="submit" class="hero-btn hover-trigger" style="width: 100%;">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#" class="social-icon hover-trigger"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-icon hover-trigger"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="social-icon hover-trigger"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon hover-trigger"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">
+                &copy; 2025 EL COMPAY. Todos los derechos reservados.<br>
+                Hecho con <i class="fas fa-bolt highlight"></i> y mucha arepa.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. PRELOADER LOGIC ---
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    initTypewriter(); // Arranca animación texto
+                }, 500);
+            }, 2000);
+
+            // --- 2. CUSTOM CURSOR LOGIC ---
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            const hoverTriggers = document.querySelectorAll('a, button, .hover-trigger, .portfolio-item');
+
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                // Dot sigue instantáneo
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                // Outline con lag suave
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            // Efecto Hover Magnético
+            hoverTriggers.forEach(trigger => {
+                trigger.addEventListener('mouseenter', () => {
+                    document.body.classList.add('hovering');
+                });
+                trigger.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('hovering');
+                });
+            });
+
+            // --- 3. HEADER SCROLL EFFECT ---
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // --- 4. TYPEWRITER EFFECT ---
+            function initTypewriter() {
+                const textElement = document.querySelector('.typewriter');
+                const words = ["Desarrollador FullStack", "Diseñador UI/UX", "Creador de Soluciones", "Ingeniero del Caos"];
+                let wordIndex = 0;
+                let charIndex = 0;
+                let isDeleting = false;
+
+                function type() {
+                    const currentWord = words[wordIndex];
+                    
+                    if (isDeleting) {
+                        textElement.textContent = currentWord.substring(0, charIndex - 1);
+                        charIndex--;
+                    } else {
+                        textElement.textContent = currentWord.substring(0, charIndex + 1);
+                        charIndex++;
+                    }
+
+                    let typeSpeed = isDeleting ? 50 : 100;
+
+                    if (!isDeleting && charIndex === currentWord.length) {
+                        typeSpeed = 2000; // Pausa al terminar palabra
+                        isDeleting = true;
+                    } else if (isDeleting && charIndex === 0) {
+                        isDeleting = false;
+                        wordIndex = (wordIndex + 1) % words.length;
+                        typeSpeed = 500;
+                    }
+
+                    setTimeout(type, typeSpeed);
+                }
+                type();
+            }
+
+            // --- 5. INTERSECTION OBSERVER (Animaciones al hacer scroll) ---
+            const observerOptions = { threshold: 0.2 };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Animar barras de habilidades
+                        if (entry.target.classList.contains('skill-progress')) {
+                            entry.target.style.width = entry.target.getAttribute('data-width');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.skill-progress').forEach(el => observer.observe(el));
+
+            // --- 6. PORTFOLIO FILTER ---
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remover clase active
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filterValue = btn.getAttribute('data-filter');
+
+                    portfolioItems.forEach(item => {
+                        if (filterValue === 'all' || item.getAttribute('data-cat') === filterValue) {
+                            item.style.display = 'block';
+                            setTimeout(() => {
+                                item.style.opacity = '1';
+                                item.style.transform = 'scale(1)';
+                            }, 50);
+                        } else {
+                            item.style.opacity = '0';
+                            item.style.transform = 'scale(0.8)';
+                            setTimeout(() => item.style.display = 'none', 300);
+                        }
+                    });
+                });
+            });
+
+            // --- 7. MOBILE MENU ---
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // --- 8. CANVAS NETWORK ANIMATION (El toque Nivel Dios) ---
+            const canvas = document.getElementById('neuro-canvas');
+            const ctx = canvas.getContext('2d');
+            let particlesArray;
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initParticles();
+            });
+
+            class Particle {
+                constructor(x, y, directionX, directionY, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.directionX = directionX;
+                    this.directionY = directionY;
+                    this.size = size;
+                    this.color = color;
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = '#00f3ff';
+                    ctx.fill();
+                }
+
+                update() {
+                    if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                    if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+                    // Interacción con Mouse
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < mouse.radius + this.size){
+                        if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 10;
+                        if (mouse.x > this.x && this.x > this.size * 10) this.x -= 10;
+                        if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 10;
+                        if (mouse.y > this.y && this.y > this.size * 10) this.y -= 10;
+                    }
+
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                    this.draw();
+                }
+            }
+
+            const mouse = { x: null, y: null, radius: (canvas.height/80) * (canvas.width/80) };
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.x;
+                mouse.y = e.y;
+            });
+
+            function initParticles() {
+                particlesArray = [];
+                let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = (Math.random() * 2) + 1;
+                    let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                    let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                    let directionX = (Math.random() * 1) - 0.5;
+                    let directionY = (Math.random() * 1) - 0.5;
+                    let color = '#00f3ff';
+
+                    particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+                }
+            }
+
+            function connect() {
+                let opacityValue = 1;
+                for (let a = 0; a < particlesArray.length; a++) {
+                    for (let b = a; b < particlesArray.length; b++) {
+                        let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                       ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                        
+                        if (distance < (canvas.width/7) * (canvas.height/7)) {
+                            opacityValue = 1 - (distance/20000);
+                            ctx.strokeStyle = 'rgba(0, 243, 255,' + opacityValue + ')';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0,0,innerWidth, innerHeight);
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                }
+                connect();
+            }
+
+            initParticles();
+            animate();
+        });
+    </script>
+</body>
+</html>
