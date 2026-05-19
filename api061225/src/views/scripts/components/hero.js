@@ -7,10 +7,10 @@ export default function heroView() {
           <h1 class="hero-title" data-text="ESSOFT">ESSOFT</h1>
         </div>
         <div class="typewriter"></div>
-        <p class="hero-copy">Diseñamos y desarrollamos plataformas empresariales robustas, seguras y escalables para impulsar la transformacion digital con una estetica tech y enfoque corporativo.</p>
+        <p class="hero-copy">Diseñamos y desarrollamos plataformas empresariales robustas, seguras y escalables para impulsar la transformación digital con una estética tech y enfoque corporativo.</p>
         <div class="hero-actions">
           <a href="#empresa" class="hero-btn hover-trigger">Conocer la empresa</a>
-          <a href="#evidencias" class="hero-btn secondary hover-trigger">Ver evidencias tecnicas</a>
+          <a href="#evidencias" class="hero-btn secondary hover-trigger">Ver evidencias técnicas</a>
         </div>
       </div>
     </section>

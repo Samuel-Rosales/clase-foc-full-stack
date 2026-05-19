@@ -11,8 +11,8 @@ export default function headerView() {
             <li><a href="#estructura" class="nav-link">Estructura</a></li>
             <li><a href="#evidencias" class="nav-link">Evidencias</a></li>
             <li><a href="#seguridad" class="nav-link">Seguridad</a></li>
-            <li><a href="#innovacion" class="nav-link">Innovacion</a></li>
-            <li><a href="#reflexion" class="nav-link">Reflexion</a></li>
+            <li><a href="#innovacion" class="nav-link">Innovación</a></li>
+            <li><a href="#reflexion" class="nav-link">Reflexión</a></li>
             <li><a href="#contacto" class="nav-link">Contacto</a></li>
           </ul>
         </nav>

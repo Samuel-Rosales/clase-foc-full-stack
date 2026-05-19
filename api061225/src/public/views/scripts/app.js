@@ -9,6 +9,9 @@ import reflexionView from './components/reflexion.js';
 import contactoView from './components/contacto.js';
 import footerView from './components/footer.js';
 
+const gsap = window.gsap;
+const ScrollTrigger = window.ScrollTrigger;
+
 const appTemplate = `
   <div id="preloader">
     <h2 class="loader-text">INICIALIZANDO ESSOFT...</h2>
@@ -138,8 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const words = [
       'Desarrollo SaaS escalable',
       'Arquitectura full-stack',
-      'Seguridad y calidad tecnica',
-      'Innovacion con impacto social',
+      'Seguridad y calidad técnica',
+      'Innovación con impacto social',
     ];
 
     let wordIndex = 0;
@@ -215,4 +218,222 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initParticles();
   animate();
+
+  initOrgChart();
+
+  if (gsap && ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.from('.hero .eyebrow, .hero-title, .typewriter, .hero-copy, .hero-actions', {
+      opacity: 0,
+      y: 24,
+      duration: 0.8,
+      stagger: 0.14,
+      ease: 'power3.out',
+    });
+
+    gsap.from('.section-title, .section-lead', {
+      scrollTrigger: { trigger: '.section-title', start: 'top 85%' },
+      opacity: 0,
+      y: 26,
+      duration: 0.8,
+      stagger: 0.12,
+      ease: 'power3.out',
+    });
+
+    gsap.utils.toArray('.stack-item').forEach((item, index) => {
+      gsap.from(item, {
+        scrollTrigger: { trigger: item, start: 'top 85%' },
+        opacity: 0,
+        x: -32,
+        duration: 0.7,
+        delay: index * 0.03,
+        ease: 'power3.out',
+      });
+    });
+
+    gsap.utils.toArray('.value-card').forEach((item, index) => {
+      gsap.from(item, {
+        scrollTrigger: { trigger: item, start: 'top 85%' },
+        opacity: 0,
+        y: 34,
+        scale: 0.96,
+        duration: 0.7,
+        delay: index * 0.05,
+        ease: 'power3.out',
+      });
+    });
+
+    gsap.utils.toArray('.service-card').forEach((card, index) => {
+      gsap.from(card, {
+        scrollTrigger: { trigger: card, start: 'top 85%' },
+        opacity: 0,
+        y: 42,
+        rotateX: 10,
+        duration: 0.8,
+        delay: index * 0.06,
+        ease: 'power3.out',
+      });
+    });
+
+    gsap.utils.toArray('.protocol-item, .case-item, .org-node').forEach((item) => {
+      gsap.from(item, {
+        scrollTrigger: { trigger: item, start: 'top 88%' },
+        opacity: 0,
+        y: 22,
+        duration: 0.65,
+        ease: 'power3.out',
+      });
+    });
+
+    gsap.from('.contact-container .panel, .contact-form', {
+      scrollTrigger: { trigger: '#contacto', start: 'top 82%' },
+      opacity: 0,
+      y: 28,
+      duration: 0.8,
+      stagger: 0.12,
+      ease: 'power3.out',
+    });
+
+    gsap.from('.org-root, .org-branch, .org-node', {
+      scrollTrigger: { trigger: '#estructura', start: 'top 80%' },
+      opacity: 0,
+      y: 24,
+      duration: 0.7,
+      stagger: 0.06,
+      ease: 'power3.out',
+    });
+
+    gsap.to('.org-line', {
+      scrollTrigger: { trigger: '#estructura', start: 'top 80%' },
+      strokeDashoffset: 0,
+      duration: 1.6,
+      stagger: 0.08,
+      ease: 'power2.out',
+    });
+  }
+
+  function initOrgChart() {
+    const wrapper = document.querySelector('.org-tree-wrapper');
+    const svg = document.querySelector('.org-svg');
+    const tooltip = document.querySelector('.org-tooltip') || createTooltip();
+    const targets = document.querySelectorAll('.org-tooltip-target');
+
+    if (!wrapper || !svg) return;
+
+    const ns = 'http://www.w3.org/2000/svg';
+
+    function clearSvg() {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+    }
+
+    function addLine(x1, y1, x2, y2, cls) {
+      const line = document.createElementNS(ns, 'line');
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+      line.setAttribute('class', `org-line ${cls}`);
+      svg.appendChild(line);
+      return line;
+    }
+
+    function centerOf(el) {
+      const wrapRect = wrapper.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      return {
+        x: rect.left - wrapRect.left + rect.width / 2,
+        y: rect.top - wrapRect.top + rect.height / 2,
+        top: rect.top - wrapRect.top,
+        bottom: rect.bottom - wrapRect.top,
+        left: rect.left - wrapRect.left,
+        right: rect.right - wrapRect.left,
+      };
+    }
+
+    function buildLines() {
+      clearSvg();
+      const root = document.querySelector('.org-root');
+      const branches = document.querySelectorAll('.org-branch');
+      const columns = document.querySelectorAll('.org-column');
+      if (!root || branches.length < 2 || columns.length < 2) return;
+
+      const rootCenter = centerOf(root);
+      const branchCenters = [...branches].map(centerOf);
+      const left = branchCenters[0];
+      const right = branchCenters[1];
+      const rowTop = Math.min(left.top, right.top);
+      const rowBottom = Math.max(left.bottom, right.bottom);
+      const splitY = rootCenter.bottom + 24;
+      const branchY = rowTop - 22;
+
+      addLine(rootCenter.x, rootCenter.bottom, rootCenter.x, splitY, 'org-line-main');
+      addLine(left.x, splitY, right.x, splitY, 'org-line-main');
+      addLine(left.x, splitY, left.x, branchY, 'org-line-primary');
+      addLine(right.x, splitY, right.x, branchY, 'org-line-secondary');
+
+      columns.forEach((column, index) => {
+        const branch = column.querySelector('.org-branch');
+        const teamNodes = column.querySelectorAll('.org-leaf-grid .org-node');
+        if (!teamNodes.length) return;
+
+        const branchCenter = centerOf(branch);
+        const teamCenters = [...teamNodes].map(centerOf);
+        const teamTop = Math.min(...teamCenters.map((c) => c.top));
+        const teamBottom = Math.max(...teamCenters.map((c) => c.bottom));
+        const teamLineY = teamTop - 14;
+        const colorClass = index === 0 ? 'org-line-primary' : 'org-line-secondary';
+
+        addLine(branchCenter.x, branchCenter.bottom, branchCenter.x, teamLineY, colorClass);
+        addLine(teamCenters[0].x, teamLineY, teamCenters[teamCenters.length - 1].x, teamLineY, colorClass);
+        addLine(branchCenter.x, branchCenter.bottom, teamCenters[Math.floor(teamCenters.length / 2)].x, teamLineY, colorClass);
+
+        teamCenters.forEach((c) => {
+          addLine(c.x, teamLineY, c.x, c.top, colorClass);
+        });
+      });
+
+      svg.setAttribute('viewBox', `0 0 ${wrapper.clientWidth} ${Math.max(rowBottom + 60, wrapper.clientHeight)}`);
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.setAttribute('width', wrapper.clientWidth);
+      svg.setAttribute('height', Math.max(rowBottom + 60, wrapper.clientHeight));
+    }
+
+    function createTooltip() {
+      const el = document.createElement('div');
+      el.className = 'org-tooltip';
+      document.body.appendChild(el);
+      return el;
+    }
+
+    function showTooltip(node, event) {
+      const desc = node.getAttribute('data-desc');
+      if (!desc) return;
+      tooltip.textContent = desc;
+      tooltip.classList.add('show');
+      const padding = 16;
+      const width = tooltip.offsetWidth || 280;
+      const height = tooltip.offsetHeight || 80;
+      let left = event.clientX + 18;
+      let top = event.clientY + 18;
+      if (left + width + padding > window.innerWidth) left = event.clientX - width - 18;
+      if (top + height + padding > window.innerHeight) top = event.clientY - height - 18;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('show');
+    }
+
+    buildLines();
+    window.addEventListener('resize', buildLines);
+    window.addEventListener('scroll', buildLines, { passive: true });
+
+    targets.forEach((node) => {
+      node.addEventListener('mouseenter', (event) => showTooltip(node, event));
+      node.addEventListener('mousemove', (event) => showTooltip(node, event));
+      node.addEventListener('mouseleave', hideTooltip);
+    });
+  }
 });

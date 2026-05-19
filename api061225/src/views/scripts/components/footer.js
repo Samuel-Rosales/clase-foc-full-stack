@@ -10,7 +10,7 @@ export default function footerView() {
         </div>
         <p style="font-size:0.8rem; color:var(--text-muted);">
           &copy; 2025 ESSOFT. Portafolio empresarial inspirado en DevCore Solutions.<br>
-          Hecho con <i class="fas fa-bolt highlight"></i> y enfoque tecnico.
+          Hecho con <i class="fas fa-bolt highlight"></i> y enfoque técnico.
         </p>
       </div>
     </footer>
