@@ -295,15 +295,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ease: 'power3.out',
     });
 
-    gsap.from('.org-root, .org-branch, .org-node', {
-      scrollTrigger: { trigger: '#estructura', start: 'top 80%' },
-      opacity: 0,
-      y: 24,
-      duration: 0.7,
-      stagger: 0.06,
-      ease: 'power3.out',
-    });
-
     gsap.to('.org-line', {
       scrollTrigger: { trigger: '#estructura', start: 'top 80%' },
       strokeDashoffset: 0,
