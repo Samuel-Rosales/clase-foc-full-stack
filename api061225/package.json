@@ -1,9 +1,10 @@
 {
   "name": "api061225",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/app"
+    "start": "node ./src/app.js"
   },
   "keywords": [],
   "author": "",

@@ -18,6 +18,7 @@ export class Server {
 
     middlewares = () => {
         this.app.use(express.static(path.join(__dirname, '../public')))
+        this.app.use('/views', express.static(path.join(__dirname, '../views')))
     }
 
     routes = () => {
